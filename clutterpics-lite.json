@@ -1,0 +1,14 @@
+{
+  "categories": [
+    {
+      "id": 1,
+      "name": "CoffeeCup",
+      "supercategory": ""
+    },
+    {
+      "id": 2,
+      "name": "PlasticBottle",
+      "supercategory": ""
+    }
+  ]
+}
