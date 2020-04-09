@@ -1,1 +1,2 @@
-sudo docker run -it --gpus all -v /home/dh/Workspace/:/workspace/ -v /media/dh/HDD/:/data/ --net=host --ipc host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" --privileged -v /dev/video$1:/dev/video$1 detectron2
+xhost +local:docker
+sudo docker run -it --gpus all -v /home/dh/Workspace/:/home/dh/Workspace -v /media/dh/HDD/:/media/dh/HDD/ --net=host --ipc host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" --privileged -v /dev/video$1:/dev/video$1 levan92/cv-suite

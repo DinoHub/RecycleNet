@@ -55,13 +55,28 @@ for i, d in enumerate(random.sample(dataset_dicts, 3)):
 # exit()
 
 cap = cv2.VideoCapture(2)
-# cap = cv2.VideoCapture(0)
+# cap = cv2.VideoCapture(1)
 # cap = cv2.VideoCapture('video.mp4')
+
+cam_h = cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
+
+cam_w = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
+cam_h = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
+fps = cap.get(cv2.CAP_PROP_FPS)
+
+print('Capture width:{}'.format(cam_w))
+print('Capture height:{}'.format(cam_h))
+print('Capture fps:{}'.format(fps))
 
 win_name = 'JAL'
 cv2.namedWindow(win_name, cv2.WINDOW_NORMAL)
 
 viz = VideoVisualizer(plastic_metadata, instance_mode=ColorMode.IMAGE_BW)
+# fourcc = cv2.VideoWriter_fourcc(*'X264')
+fourcc = cv2.VideoWriter_fourcc(*'MP4V')
+# fourcc = cv2.VideoWriter_fourcc(*'MJPG')
+vw = cv2.VideoWriter('out.mp4', fourcc, 5, (int(cam_w), int(cam_h)))
+
 if cap.isOpened():
 
     inference_time_cma = 0
@@ -72,17 +87,17 @@ if cap.isOpened():
         if not ret:
             break
 
-        tic = time.time()
+        # tic = time.time()
         res = predictor(frame)
-        toc = time.time()
+        # toc = time.time()
 
-        curr_inference_time = toc - tic
-        inference_time_cma = (n * inference_time_cma + curr_inference_time) / (n+1)
+        # curr_inference_time = toc - tic
+        # inference_time_cma = (n * inference_time_cma + curr_inference_time) / (n+1)
 
 
-        print('cma inference time: {:0.3} sec'.format(inference_time_cma))
+        # print('cma inference time: {:0.3} sec'.format(inference_time_cma))
 
-        tic2 = time.time()
+        # tic2 = time.time()
 
         drawned_frame = frame.copy() # make a copy of the original frame
         
@@ -97,17 +112,19 @@ if cap.isOpened():
         drawned_frame = v_out.get_image()
         
         cv2.imshow(win_name, drawned_frame)
-        toc2 = time.time()
+        # toc2 = time.time()
+        vw.write(drawned_frame)
 
-        curr_drawing_time = toc2 - tic2
-        drawing_time_cma = (n * drawing_time_cma + curr_drawing_time) / (n+1)
+        # curr_drawing_time = toc2 - tic2
+        # drawing_time_cma = (n * drawing_time_cma + curr_drawing_time) / (n+1)
         
-        print('cma draw time: {:0.3} sec'.format(drawing_time_cma))
+        # print('cma draw time: {:0.3} sec'.format(drawing_time_cma))
 
         if cv2.waitKey(1) & 0xff == ord('q'):
             break
 
         n += 1
 
+vw.release()
 cap.release()
 print('Done.')
